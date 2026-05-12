@@ -1,0 +1,42 @@
+{
+  "module": {
+    "specifier": "github.com/yanlingrpa/meituan-wxapp-pc-collector@v1.2.3",
+    "package": "main",
+    "description": "Meituan WXApp PC Collector.",
+    "tags": ["automation", "browser", "export"],
+    "website": "https://yanlingrpa.com/demo-script",
+    "update_time": "2026-04-22T12:30:00Z",
+    "author": "Yanling RPA Team",
+    "email": "automation@yanlingrpa.com",
+    "license": "MIT",
+    "devices": ["windows", "mac"],
+    "engine_version": ">=1.0.0"
+  },
+  "gui_apps": [
+    {
+      "id": "wxapp-meituan",
+      "name": "Meituan WXApp",
+      "launcher": "Weixin.exe",
+      "process": "WeixinExt.exe",
+      "launch_uri": "weixin://launchapplet/?app_id=wxde8ac0a21135"
+    }
+  ],
+  "variables": [
+    {
+      "name": "location",
+      "abstract": "定位地址",
+      "type": "string",
+      "default": "",
+      "required": false,
+      "save": true
+    },
+    {
+      "name": "channel",
+      "abstract": "频道名称",
+      "type": "string",
+      "default": "看病买药",
+      "required": true,
+      "save": true
+    }
+  ]
+}
