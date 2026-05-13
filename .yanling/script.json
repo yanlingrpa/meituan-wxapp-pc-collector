@@ -1,7 +1,7 @@
 {
   "module": {
     "specifier": "github.com/yanlingrpa/meituan-wxapp-pc-collector@v1.2.3",
-    "package": "main",
+    "package": "meituan",
     "description": "Meituan WXApp PC Collector.",
     "tags": ["automation", "browser", "export"],
     "website": "https://yanlingrpa.com/demo-script",

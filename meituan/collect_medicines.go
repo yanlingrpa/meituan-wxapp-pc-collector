@@ -24,7 +24,12 @@ type ProductInfoDto struct {
 }
 
 func CollectMedicine(rt script.ModuleRuntime, dto SearchProductDto) ([]ProductInfoDto, error) {
-	ready, err := wxapputils.CheckWxappReady(rt)
+	val, ok := rt.GetVariable("wxapp-meituan")
+	if !ok {
+		return nil, fmt.Errorf("wxapp-meituan is not ready")
+	}
+	guiId := val.(string)
+	ready, err := wxapputils.CheckWxappReady(rt, guiId)
 	if err != nil {
 		return nil, err
 	}

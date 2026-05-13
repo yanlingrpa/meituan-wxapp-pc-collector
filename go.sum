@@ -1,4 +1,4 @@
-github.com/yanlingrpa/wxapp-pc-toolkits v0.0.0-20260414133459-b5f06eb8e6ad h1:eKIwEo/BxJZ+C8GsKF3h8L8cUDpfAKLw66oBVFnmPHE=
-github.com/yanlingrpa/wxapp-pc-toolkits v0.0.0-20260414133459-b5f06eb8e6ad/go.mod h1:m9BS2Qd1QGbX73V0cXNySbOtU2laLFu4YSQO/THg3Wo=
-yanlingrpa.com/yanling/protocol v0.1.15 h1:R7At7aKT692dG5I2fByY9drmT+MXhaX2Q0SjMTR1Bfw=
-yanlingrpa.com/yanling/protocol v0.1.15/go.mod h1:tuXhcSLTv/x2TmFWDg83+IVo51qDKpnen1VeJFyYjjE=
+github.com/yanlingrpa/wxapp-pc-toolkits v0.0.2 h1:L5wo/izFrrEhcAB7z4xS5CCHl3OkdGuGgO0meU6Wpgg=
+github.com/yanlingrpa/wxapp-pc-toolkits v0.0.2/go.mod h1:1Vci0JxZdhbFTTPUZwj6cX+eC65jET+EWLlCZGBCfUo=
+yanlingrpa.com/yanling/protocol v0.1.16 h1:ihTBLTnsQPz6qP6SUAcNK9veVNQ+9R5Io8I4vj/WBiY=
+yanlingrpa.com/yanling/protocol v0.1.16/go.mod h1:tuXhcSLTv/x2TmFWDg83+IVo51qDKpnen1VeJFyYjjE=
