@@ -31,8 +31,6 @@ var excludedTopLevelDirs = map[string]struct{}{
 	"doc":       {},
 	"docs":      {},
 	"examples":  {},
-	"proto":     {},
-	"protobuf":  {},
 	"internal":  {},
 	"scripts":   {},
 	"symbol":    {},
