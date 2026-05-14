@@ -28,19 +28,59 @@ type ProductSearchResultDto struct {
 	ProductInfos []ProductInfoDto `json:"product_infos"`
 }
 
-func CollectMedicine(rt script.ModuleRuntime, dto SearchProductDto) (*ProductSearchResultDto, error) {
+func getGuiId(rt script.ModuleRuntime) (string, error) {
 	val, ok := rt.GetVariable("wxapp-meituan")
 	if !ok {
-		return nil, fmt.Errorf("wxapp-meituan is not ready")
+		return "", fmt.Errorf("wxapp-meituan is not ready")
 	}
 	guiId := val.(string)
+	return guiId, nil
+}
+
+func getLocation(rt script.ModuleRuntime) (string, error) {
+	val, ok := rt.GetVariable("location")
+	if !ok {
+		return "", fmt.Errorf("location is not ready")
+	}
+	location := val.(string)
+	if location == "" {
+		return "", fmt.Errorf("location is empty")
+	}
+	return location, nil
+}
+
+func Prepare(rt script.ModuleRuntime) error {
+	guiId, err := getGuiId(rt)
+	if err != nil {
+		return err
+	}
+	location, err := getLocation(rt)
+	if err != nil {
+		return err
+	}
 	ready, err := wxapputils.CheckWxappReady(rt, guiId)
+	if err != nil {
+		return fmt.Errorf("failed to check wxapp readiness: %w", err)
+	}
+	if !ready {
+		return fmt.Errorf("wxapp is not ready")
+	}
+	err = wxapputils.ChangeGPSLocation(rt, wxapputils.PreferedLocation{
+		GuiId:   guiId,
+		Keyword: location,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func CollectMedicine(rt script.ModuleRuntime, dto SearchProductDto) (*ProductSearchResultDto, error) {
+	_, err := getGuiId(rt)
 	if err != nil {
 		return nil, err
 	}
-	if !ready {
-		return nil, fmt.Errorf("wxapp is not ready")
-	}
+
 	results := []ProductInfoDto{}
 	one := ProductInfoDto{
 		Brand:     "阿斯利康",
