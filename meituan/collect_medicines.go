@@ -7,100 +7,6 @@ import (
 	"yanlingrpa.com/yanling/protocol/script"
 )
 
-var subscribers map[string]script.Subscriber
-
-type SearchProductDto struct {
-	Keyword    string   `json:"keyword"`
-	FetchCount int      `json:"fetch_count"`
-	Tags       []string `json:"tags"`
-}
-
-type ProductInfoDto struct {
-	Brand     string `json:"brand"`
-	Name      string `json:"name"`
-	Standard  string `json:"standard"`
-	PackQty   int32  `json:"pack_qty"`
-	TotalCent int64  `json:"total_cent"`
-	UnitCent  int64  `json:"unit_cent"`
-	ShopName  string `json:"shop_name"`
-}
-
-type ProductSearchResultDto struct {
-	Keyword      string           `json:"keyword"`
-	ProductInfos []ProductInfoDto `json:"product_infos"`
-}
-
-func getGuiId(rt script.ModuleRuntime) (string, error) {
-	guiId, ok := rt.StringVariable("wxapp-meituan")
-	if !ok {
-		return "", fmt.Errorf("wxapp-meituan is not ready")
-	}
-	return guiId, nil
-}
-
-func getLocation(rt script.ModuleRuntime) (string, error) {
-	location, ok := rt.StringVariable("location")
-	if !ok {
-		return "", fmt.Errorf("location is not ready")
-	}
-	if location == "" {
-		return "", fmt.Errorf("location is empty")
-	}
-	return location, nil
-}
-
-func Prepare(rt script.ModuleRuntime) error {
-	guiId, err := getGuiId(rt)
-	if err != nil {
-		return err
-	}
-	location, err := getLocation(rt)
-	if err != nil {
-		return err
-	}
-	ready, err := wxapputils.CheckWxappReady(rt, guiId)
-	if err != nil {
-		return fmt.Errorf("failed to check wxapp readiness: %w", err)
-	}
-	// _ret, err := rt.InvokeWorker("github.com/yanlingrpa/wxapp-pc-toolkits", "CheckWxappReady", guiId)
-	// if err != nil {
-	// 	return fmt.Errorf("failed to check wxapp readiness: %w", err)
-	// }
-	// ready = _ret.(bool)
-
-	if !ready {
-		return fmt.Errorf("wxapp is not ready")
-	}
-	_, err = wxapputils.ChangeGPSLocation(rt, wxapputils.PreferedLocation{
-		GuiId:   guiId,
-		Keyword: location,
-	})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func onAppReady(event script.Event) {
-	fmt.Printf("app is ready, payload: %+v\n", event.Data)
-}
-
-func Initialize(rt script.ModuleRuntime) (bool, error) {
-	sb, err := rt.Subscribe("github.com/yanlingrpa/wxapp-pc-toolkits/wxapputils", "app_ready", onAppReady)
-	if err != nil {
-		return false, err
-	}
-	subscribers["app_ready"] = sb
-	return true, nil
-}
-
-func Finalize(rt script.ModuleRuntime) (bool, error) {
-	for _, sb := range subscribers {
-		rt.Unsubscribe(sb)
-	}
-	return true, nil
-}
-
 func CollectMedicine(rt script.ModuleRuntime, dto SearchProductDto) (*ProductSearchResultDto, error) {
 	_, err := getGuiId(rt)
 	if err != nil {
@@ -111,11 +17,6 @@ func CollectMedicine(rt script.ModuleRuntime, dto SearchProductDto) (*ProductSea
 	if err != nil {
 		return nil, err
 	}
-	// _resp_GetPageInfo, err := rt.InvokeWorker("github.com/yanlingrpa/wxapp-pc-toolkits", "GetPageInfo", nil)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to get page info: %w", err)
-	// }
-	// pageInfo = _resp_GetPageInfo.(wxapputils.WxappPageInfo)
 
 	if !pageInfo.Searchable {
 		return nil, fmt.Errorf("current page is not searchable")
