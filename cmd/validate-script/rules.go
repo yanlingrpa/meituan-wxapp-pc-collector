@@ -49,9 +49,9 @@ func validateAll(files []*fileInfo, structs map[string]*structDef, targetPackage
 		}
 	}
 
-	if publicFnCount != 1 {
+	if publicFnCount < 1 {
 		errs = append(errs, validationError{
-			Msg: fmt.Sprintf("must define exactly one exported top-level function in package %q, got %d", targetPackage, publicFnCount),
+			Msg: fmt.Sprintf("must define at least one exported top-level function in package %q, got %d", targetPackage, publicFnCount),
 		})
 	}
 
@@ -129,19 +129,27 @@ func validatePublicMethod(fd *ast.FuncDecl, imports map[string]string, relPath s
 	resultStructName := ""
 
 	params := expandParams(fd.Type.Params)
-	if len(params) != 2 {
+	if len(params) == 0 {
 		errs = append(errs, validationError{
 			File: relPath,
 			Line: pos.Line,
-			Msg:  fmt.Sprintf("exported function %s must have exactly two parameters", fd.Name.Name),
+			Msg:  fmt.Sprintf("exported function %s must have at least one parameter", fd.Name.Name),
 		})
 	}
 
-	if len(params) >= 1 && !isModuleRuntimeType(params[0].Type, imports) {
+	if !isModuleRuntimeType(params[0].Type, imports) {
 		errs = append(errs, validationError{
 			File: relPath,
 			Line: fset.Position(params[0].Type.Pos()).Line,
 			Msg:  fmt.Sprintf("the first parameter of %s must be script.ModuleRuntime", fd.Name.Name),
+		})
+	}
+
+	if len(params) > 2 {
+		errs = append(errs, validationError{
+			File: relPath,
+			Line: pos.Line,
+			Msg:  fmt.Sprintf("exported function %s must have exactly one/two parameters", fd.Name.Name),
 		})
 	}
 
@@ -175,7 +183,7 @@ func validatePublicMethod(fd *ast.FuncDecl, imports map[string]string, relPath s
 		}
 	}
 
-	if len(params) >= 2 {
+	if len(params) == 2 {
 		if isPrimitiveType(params[1].Type) {
 			return errs, methodStructName, resultStructName
 		}
