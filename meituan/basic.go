@@ -13,7 +13,7 @@ func Initialize(rt script.ModuleRuntime) (bool, error) {
 	if subscribers == nil {
 		subscribers = make(map[string]script.Subscriber)
 	}
-	sb, err := rt.Subscribe("github.com/yanlingrpa/wxapp-pc-toolkits/wxapputils", "app_ready", onAppReady)
+	sb, err := rt.Subscribe("github.com/yanlingrpa/wxapp-pc-toolkits", "app_ready", onAppReady)
 	if err != nil {
 		return false, err
 	}
